@@ -23,9 +23,9 @@ V0.7.9-pre
 
 ##TODO##
 > 1、用connect写一个`nodejs`版服务器，练手嘛。。。虽然很简单！  
-> 2、既然练手，那也得有点专业精神，包装成一个可全局安装的`node module`，这样可以直接通过命令行启动文档喽~否则如果  
-     用`nodejs`做服务端的话，还得先去命令行启动，然后到浏览器请求本地文档页面！
+> 2、既然练手，那也得有点专业精神，包装成一个可全局安装的`node module`，这样可以直接通过命令行启动文档喽~**Cool!**  
+否则如果用`nodejs`做服务端的话，还得先去命令行启动，然后到浏览器请求本地文档页面！  
   
 ##Relative##
-[这哥们儿已经写了一个比官方文档更漂亮且实用的文档了](http://millermedeiros.github.com/mdoc/examples/node_api/doc/)  
+[这哥们儿已经hack了一个比官方文档更漂亮且实用的文档了](http://millermedeiros.github.com/mdoc/examples/node_api/doc/)  
 可搜索哦~~
