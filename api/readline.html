@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Readline Node.js v0.7.9-pre Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/api/readline.html">
+</head>
+<body class="alt apidoc" id="api-section-readline">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/#download" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+          <header>
+            <h1>Node.js v0.7.9-pre Manual &amp; Documentation</h1>
+            <div id="gtoc">
+              <p>
+                <a href="index.html" name="toc">Index</a> |
+                <a href="all.html">View on single page</a> |
+                <a href="readline.json">View as JSON</a>
+              </p>
+            </div>
+            <hr>
+          </header>
+
+          <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+<li><a href="#readline_readline">Readline</a><ul>
+<li><a href="#readline_readline_createinterface_options">readline.createInterface(options)</a></li>
+<li><a href="#readline_class_interface">Class: Interface</a><ul>
+<li><a href="#readline_rl_setprompt_prompt_length">rl.setPrompt(prompt, length)</a></li>
+<li><a href="#readline_rl_prompt_preservecursor">rl.prompt([preserveCursor])</a></li>
+<li><a href="#readline_rl_question_query_callback">rl.question(query, callback)</a></li>
+<li><a href="#readline_rl_pause">rl.pause()</a></li>
+<li><a href="#readline_rl_resume">rl.resume()</a></li>
+<li><a href="#readline_rl_close">rl.close()</a></li>
+<li><a href="#readline_rl_write_data_key">rl.write(data, [key])</a></li>
+</ul>
+</li>
+<li><a href="#readline_events">Events</a><ul>
+<li><a href="#readline_event_line">Event: &apos;line&apos;</a></li>
+<li><a href="#readline_event_pause">Event: &apos;pause&apos;</a></li>
+<li><a href="#readline_event_resume">Event: &apos;resume&apos;</a></li>
+<li><a href="#readline_event_close">Event: &apos;close&apos;</a></li>
+<li><a href="#readline_event_sigint">Event: &apos;SIGINT&apos;</a></li>
+<li><a href="#readline_event_sigtstp">Event: &apos;SIGTSTP&apos;</a></li>
+<li><a href="#readline_event_sigcont">Event: &apos;SIGCONT&apos;</a></li>
+</ul>
+</li>
+<li><a href="#readline_example_tiny_cli">Example: Tiny CLI</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+
+          <div id="apicontent">
+            <h1>Readline<span><a class="mark" href="#readline_readline" id="readline_readline">#</a></span></h1>
+<pre><code>Stability: 2 - Unstable</code></pre>
+<p>To use this module, do <code>require(&apos;readline&apos;)</code>. Readline allows reading of a
+stream (such as <code>process.stdin</code>) on a line-by-line basis.
+
+</p>
+<p>Note that once you&apos;ve invoked this module, your node program will not
+terminate until you&apos;ve closed the interface. Here&apos;s how to allow your
+program to gracefully exit:
+
+</p>
+<pre><code>var readline = require(&apos;readline&apos;);
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
+
+rl.question(&quot;What do you think of node.js? &quot;, function(answer) {
+  // TODO: Log the answer in a database
+  console.log(&quot;Thank you for your valuable feedback:&quot;, answer);
+
+  rl.close();
+});</code></pre>
+<h2>readline.createInterface(options)<span><a class="mark" href="#readline_readline_createinterface_options" id="readline_readline_createinterface_options">#</a></span></h2>
+<p>Creates a readline <code>Interface</code> instance. Accepts an &quot;options&quot; Object that takes
+the following values:
+
+</p>
+<ul>
+<li><p><code>input</code> - the readable stream to listen to (Required).</p>
+</li>
+<li><p><code>output</code> - the writable stream to write readline data to (Required).</p>
+</li>
+<li><p><code>completer</code> - an optional function that is used for Tab autocompletion. See
+below for an example of using this.</p>
+</li>
+<li><p><code>terminal</code> - pass <code>true</code> if the <code>input</code> and <code>output</code> streams should be
+treated like a TTY, and have ANSI/VT100 escape codes written to it.
+Defaults to checking <code>isTTY</code> on the <code>output</code> stream upon instantiation.</p>
+</li>
+</ul>
+<p>The <code>completer</code> function is given a the current line entered by the user, and
+is supposed to return an Array with 2 entries:
+
+</p>
+<ol>
+<li><p>An Array with matching entries for the completion.</p>
+</li>
+<li><p>The substring that was used for the matching.</p>
+</li>
+</ol>
+<p>Which ends up looking something like:
+<code>[[substr1, substr2, ...], originalsubstring]</code>.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>function completer(line) {
+  var completions = &apos;.help .error .exit .quit .q&apos;.split(&apos; &apos;)
+  var hits = completions.filter(function(c) { return c.indexOf(line) == 0 })
+  // show all completions if none found
+  return [hits.length ? hits : completions, line]
+}</code></pre>
+<p>Also <code>completer</code> can be run in async mode if it accepts two arguments:
+
+</p>
+<pre><code>function completer(linePartial, callback) {
+  callback(null, [[&apos;123&apos;], linePartial]);
+}</code></pre>
+<p><code>createInterface</code> is commonly used with <code>process.stdin</code> and
+<code>process.stdout</code> in order to accept user input:
+
+</p>
+<pre><code>var readline = require(&apos;readline&apos;);
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});</code></pre>
+<p>Once you have a readline instance, you most commonly listen for the
+<code>&quot;line&quot;</code> event.
+
+</p>
+<p>If <code>terminal</code> is <code>true</code> for this instance then the <code>output</code> stream will get
+the best compatibility if it defines an <code>output.columns</code> property, and fires
+a <code>&quot;resize&quot;</code> event on the <code>output</code> if/when the columns ever change
+(<code>process.stdout</code> does this automatically when it is a TTY).
+
+</p>
+<h2>Class: Interface<span><a class="mark" href="#readline_class_interface" id="readline_class_interface">#</a></span></h2>
+<p>The class that represents a readline interface with an input and output
+stream.
+
+</p>
+<h3>rl.setPrompt(prompt, length)<span><a class="mark" href="#readline_rl_setprompt_prompt_length" id="readline_rl_setprompt_prompt_length">#</a></span></h3>
+<p>Sets the prompt, for example when you run <code>node</code> on the command line, you see
+<code>&gt; </code>, which is node&apos;s prompt.
+
+</p>
+<h3>rl.prompt([preserveCursor])<span><a class="mark" href="#readline_rl_prompt_preservecursor" id="readline_rl_prompt_preservecursor">#</a></span></h3>
+<p>Readies readline for input from the user, putting the current <code>setPrompt</code>
+options on a new line, giving the user a new spot to write. Set <code>preserveCursor</code>
+to <code>true</code> to prevent the cursor placement being reset to <code>0</code>.
+
+</p>
+<p>This will also resume the <code>input</code> stream used with <code>createInterface</code> if it has
+been paused.
+
+</p>
+<h3>rl.question(query, callback)<span><a class="mark" href="#readline_rl_question_query_callback" id="readline_rl_question_query_callback">#</a></span></h3>
+<p>Prepends the prompt with <code>query</code> and invokes <code>callback</code> with the user&apos;s
+response. Displays the query to the user, and then invokes <code>callback</code>
+with the user&apos;s response after it has been typed.
+
+</p>
+<p>This will also resume the <code>input</code> stream used with <code>createInterface</code> if
+it has been paused.
+
+</p>
+<p>Example usage:
+
+</p>
+<pre><code>interface.question(&apos;What is your favorite food?&apos;, function(answer) {
+  console.log(&apos;Oh, so your favorite food is &apos; + answer);
+});</code></pre>
+<h3>rl.pause()<span><a class="mark" href="#readline_rl_pause" id="readline_rl_pause">#</a></span></h3>
+<p>Pauses the readline <code>input</code> stream, allowing it to be resumed later if needed.
+
+</p>
+<h3>rl.resume()<span><a class="mark" href="#readline_rl_resume" id="readline_rl_resume">#</a></span></h3>
+<p>Resumes the readline <code>input</code> stream.
+
+</p>
+<h3>rl.close()<span><a class="mark" href="#readline_rl_close" id="readline_rl_close">#</a></span></h3>
+<p>Closes the <code>Interface</code> instance, relinquishing control on the <code>input</code> and
+<code>output</code> streams. The &quot;close&quot; event will also be emitted.
+
+</p>
+<h3>rl.write(data, [key])<span><a class="mark" href="#readline_rl_write_data_key" id="readline_rl_write_data_key">#</a></span></h3>
+<p>Writes <code>data</code> to <code>output</code> stream. <code>key</code> is an object literal to represent a key
+sequence; available if the terminal is a TTY.
+
+</p>
+<p>This will also resume the <code>input</code> stream if it has been paused.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>rl.write(&apos;Delete me!&apos;);
+// Simulate ctrl+u to delete the line written previously
+rl.write(null, {ctrl: true, name: &apos;u&apos;});</code></pre>
+<h2>Events<span><a class="mark" href="#readline_events" id="readline_events">#</a></span></h2>
+<h3>Event: &apos;line&apos;<span><a class="mark" href="#readline_event_line" id="readline_event_line">#</a></span></h3>
+<p><code>function (line) {}</code>
+
+</p>
+<p>Emitted whenever the <code>input</code> stream receives a <code>\n</code>, usually received when the
+user hits enter, or return. This is a good hook to listen for user input.
+
+</p>
+<p>Example of listening for <code>line</code>:
+
+</p>
+<pre><code>rl.on(&apos;line&apos;, function (cmd) {
+  console.log(&apos;You just typed: &apos;+cmd);
+});</code></pre>
+<h3>Event: &apos;pause&apos;<span><a class="mark" href="#readline_event_pause" id="readline_event_pause">#</a></span></h3>
+<p><code>function () {}</code>
+
+</p>
+<p>Emitted whenever the <code>input</code> stream is paused.
+
+</p>
+<p>Also emitted whenever the <code>input</code> stream is not paused and receives the
+<code>SIGCONT</code> event. (See events <code>SIGTSTP</code> and <code>SIGCONT</code>)
+
+</p>
+<p>Example of listening for <code>pause</code>:
+
+</p>
+<pre><code>rl.on(&apos;pause&apos;, function() {
+  console.log(&apos;Readline paused.&apos;);
+});</code></pre>
+<h3>Event: &apos;resume&apos;<span><a class="mark" href="#readline_event_resume" id="readline_event_resume">#</a></span></h3>
+<p><code>function () {}</code>
+
+</p>
+<p>Emitted whenever the <code>input</code> stream is resumed.
+
+</p>
+<p>Example of listening for <code>resume</code>:
+
+</p>
+<pre><code>rl.on(&apos;resume&apos;, function() {
+  console.log(&apos;Readline resumed.&apos;);
+});</code></pre>
+<h3>Event: &apos;close&apos;<span><a class="mark" href="#readline_event_close" id="readline_event_close">#</a></span></h3>
+<p><code>function () {}</code>
+
+</p>
+<p>Emitted when <code>close()</code> is called.
+
+</p>
+<p>Also emitted when the <code>input</code> stream receives its &quot;end&quot; event. The <code>Interface</code>
+instance should be considered &quot;finished&quot; once this is emitted. For example, when
+the <code>input</code> stream receives <code>^D</code>, respectively known as <code>EOT</code>.
+
+</p>
+<p>This event is also called if there is no <code>SIGINT</code> event listener present when
+the <code>input</code> stream receives a <code>^C</code>, respectively known as <code>SIGINT</code>.
+
+</p>
+<h3>Event: &apos;SIGINT&apos;<span><a class="mark" href="#readline_event_sigint" id="readline_event_sigint">#</a></span></h3>
+<p><code>function () {}</code>
+
+</p>
+<p>Emitted whenever the <code>input</code> stream receives a <code>^C</code>, respectively known as
+<code>SIGINT</code>. If there is no <code>SIGINT</code> event listener present when the <code>input</code>
+stream receives a <code>SIGINT</code>, <code>pause</code> will be triggered.
+
+</p>
+<p>Example of listening for <code>SIGINT</code>:
+
+</p>
+<pre><code>rl.on(&apos;SIGINT&apos;, function() {
+  rl.question(&apos;Are you sure you want to exit?&apos;, function(answer) {
+    if (answer.match(/^y(es)?$/i)) rl.pause();
+  });
+});</code></pre>
+<h3>Event: &apos;SIGTSTP&apos;<span><a class="mark" href="#readline_event_sigtstp" id="readline_event_sigtstp">#</a></span></h3>
+<p><code>function () {}</code>
+
+</p>
+<p><strong>This does not work on Windows.</strong>
+
+</p>
+<p>Emitted whenever the <code>input</code> stream receives a <code>^Z</code>, respectively known as
+<code>SIGTSTP</code>. If there is no <code>SIGTSTP</code> event listener present when the <code>input</code>
+stream receives a <code>SIGTSTP</code>, the program will be sent to the background.
+
+</p>
+<p>When the program is resumed with <code>fg</code>, the <code>pause</code> and <code>SIGCONT</code> events will be
+emitted. You can use either to resume the stream.
+
+</p>
+<p>The <code>pause</code> and <code>SIGCONT</code> events will not be triggered if the stream was paused
+before the program was sent to the background.
+
+</p>
+<p>Example of listening for <code>SIGTSTP</code>:
+
+</p>
+<pre><code>rl.on(&apos;SIGTSTP&apos;, function() {
+  // This will override SIGTSTP and prevent the program from going to the
+  // background.
+  console.log(&apos;Caught SIGTSTP.&apos;);
+});</code></pre>
+<h3>Event: &apos;SIGCONT&apos;<span><a class="mark" href="#readline_event_sigcont" id="readline_event_sigcont">#</a></span></h3>
+<p><code>function () {}</code>
+
+</p>
+<p><strong>This does not work on Windows.</strong>
+
+</p>
+<p>Emitted whenever the <code>input</code> stream is sent to the background with <code>^Z</code>,
+respectively known as <code>SIGTSTP</code>, and then continued with <code>fg(1)</code>. This event
+only emits if the stream was not paused before sending the program to the
+background.
+
+</p>
+<p>Example of listening for <code>SIGCONT</code>:
+
+</p>
+<pre><code>rl.on(&apos;SIGCONT&apos;, function() {
+  // `prompt` will automatically resume the stream
+  rl.prompt();
+});</code></pre>
+<h2>Example: Tiny CLI<span><a class="mark" href="#readline_example_tiny_cli" id="readline_example_tiny_cli">#</a></span></h2>
+<p>Here&apos;s an example of how to use all these together to craft a tiny command
+line interface:
+
+</p>
+<pre><code>var readline = require(&apos;readline&apos;),
+    rl = readline.createInterface(process.stdin, process.stdout);
+
+rl.setPrompt(&apos;OHAI&gt; &apos;);
+rl.prompt();
+
+rl.on(&apos;line&apos;, function(line) {
+  switch(line.trim()) {
+    case &apos;hello&apos;:
+      console.log(&apos;world!&apos;);
+      break;
+    default:
+      console.log(&apos;Say what? I might have heard `&apos; + line.trim() + &apos;`&apos;);
+      break;
+  }
+  rl.prompt();
+}).on(&apos;close&apos;, function() {
+  console.log(&apos;Have a great day!&apos;);
+  process.exit(0);
+});</code></pre>
+
+          </div>
+        </div>
+    </div>
+    <div id="footer">
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/#download">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.7.9-pre/LICENSE">license</a>.</p>
+    </div>
+
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    var gaJsHost = (("https:" == document.location.protocol) ?
+    "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script>
+    try {
+      var pageTracker = _gat._getTracker("UA-10874194-2");
+      pageTracker._trackPageview();
+      } catch(err) {}</script>
+</body>
+</html>
+

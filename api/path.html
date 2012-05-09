@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Path Node.js v0.7.9-pre Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/api/path.html">
+</head>
+<body class="alt apidoc" id="api-section-path">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/#download" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+          <header>
+            <h1>Node.js v0.7.9-pre Manual &amp; Documentation</h1>
+            <div id="gtoc">
+              <p>
+                <a href="index.html" name="toc">Index</a> |
+                <a href="all.html">View on single page</a> |
+                <a href="path.json">View as JSON</a>
+              </p>
+            </div>
+            <hr>
+          </header>
+
+          <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+<li><a href="#path_path">Path</a><ul>
+<li><a href="#path_path_normalize_p">path.normalize(p)</a></li>
+<li><a href="#path_path_join_path1_path2">path.join([path1], [path2], [...])</a></li>
+<li><a href="#path_path_resolve_from_to">path.resolve([from ...], to)</a></li>
+<li><a href="#path_path_relative_from_to">path.relative(from, to)</a></li>
+<li><a href="#path_path_dirname_p">path.dirname(p)</a></li>
+<li><a href="#path_path_basename_p_ext">path.basename(p, [ext])</a></li>
+<li><a href="#path_path_extname_p">path.extname(p)</a></li>
+<li><a href="#path_path_sep">path.sep</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+
+          <div id="apicontent">
+            <h1>Path<span><a class="mark" href="#path_path" id="path_path">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
+<p>This module contains utilities for handling and transforming file
+paths.  Almost all these methods perform only string transformations.
+The file system is not consulted to check whether paths are valid.
+
+</p>
+<p>Use <code>require(&apos;path&apos;)</code> to use this module.  The following methods are provided:
+
+</p>
+<h2>path.normalize(p)<span><a class="mark" href="#path_path_normalize_p" id="path_path_normalize_p">#</a></span></h2>
+<p>Normalize a string path, taking care of <code>&apos;..&apos;</code> and <code>&apos;.&apos;</code> parts.
+
+</p>
+<p>When multiple slashes are found, they&apos;re replaced by a single one;
+when the path contains a trailing slash, it is preserved.
+On windows backslashes are used. 
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>path.normalize(&apos;/foo/bar//baz/asdf/quux/..&apos;)
+// returns
+&apos;/foo/bar/baz/asdf&apos;</code></pre>
+<h2>path.join([path1], [path2], [...])<span><a class="mark" href="#path_path_join_path1_path2" id="path_path_join_path1_path2">#</a></span></h2>
+<p>Join all arguments together and normalize the resulting path.
+Non-string arguments are ignored.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>path.join(&apos;/foo&apos;, &apos;bar&apos;, &apos;baz/asdf&apos;, &apos;quux&apos;, &apos;..&apos;)
+// returns
+&apos;/foo/bar/baz/asdf&apos;
+
+path.join(&apos;foo&apos;, {}, &apos;bar&apos;)
+// returns
+&apos;foo/bar&apos;</code></pre>
+<h2>path.resolve([from ...], to)<span><a class="mark" href="#path_path_resolve_from_to" id="path_path_resolve_from_to">#</a></span></h2>
+<p>Resolves <code>to</code> to an absolute path.
+
+</p>
+<p>If <code>to</code> isn&apos;t already absolute <code>from</code> arguments are prepended in right to left
+order, until an absolute path is found. If after using all <code>from</code> paths still
+no absolute path is found, the current working directory is used as well. The
+resulting path is normalized, and trailing slashes are removed unless the path 
+gets resolved to the root directory. Non-string arguments are ignored.
+
+</p>
+<p>Another way to think of it is as a sequence of <code>cd</code> commands in a shell.
+
+</p>
+<pre><code>path.resolve(&apos;foo/bar&apos;, &apos;/tmp/file/&apos;, &apos;..&apos;, &apos;a/../subfile&apos;)</code></pre>
+<p>Is similar to:
+
+</p>
+<pre><code>cd foo/bar
+cd /tmp/file/
+cd ..
+cd a/../subfile
+pwd</code></pre>
+<p>The difference is that the different paths don&apos;t need to exist and may also be
+files.
+
+</p>
+<p>Examples:
+
+</p>
+<pre><code>path.resolve(&apos;/foo/bar&apos;, &apos;./baz&apos;)
+// returns
+&apos;/foo/bar/baz&apos;
+
+path.resolve(&apos;/foo/bar&apos;, &apos;/tmp/file/&apos;)
+// returns
+&apos;/tmp/file&apos;
+
+path.resolve(&apos;wwwroot&apos;, &apos;static_files/png/&apos;, &apos;../gif/image.gif&apos;)
+// if currently in /home/myself/node, it returns
+&apos;/home/myself/node/wwwroot/static_files/gif/image.gif&apos;</code></pre>
+<h2>path.relative(from, to)<span><a class="mark" href="#path_path_relative_from_to" id="path_path_relative_from_to">#</a></span></h2>
+<p>Solve the relative path from <code>from</code> to <code>to</code>.
+
+</p>
+<p>At times we have two absolute paths, and we need to derive the relative
+path from one to the other.  This is actually the reverse transform of
+<code>path.resolve</code>, which means we see that:
+
+</p>
+<pre><code>path.resolve(from, path.relative(from, to)) == path.resolve(to)</code></pre>
+<p>Examples:
+
+</p>
+<pre><code>path.relative(&apos;C:\\orandea\\test\\aaa&apos;, &apos;C:\\orandea\\impl\\bbb&apos;)
+// returns
+&apos;..\\..\\impl\\bbb&apos;
+
+path.relative(&apos;/data/orandea/test/aaa&apos;, &apos;/data/orandea/impl/bbb&apos;)
+// returns
+&apos;../../impl/bbb&apos;</code></pre>
+<h2>path.dirname(p)<span><a class="mark" href="#path_path_dirname_p" id="path_path_dirname_p">#</a></span></h2>
+<p>Return the directory name of a path.  Similar to the Unix <code>dirname</code> command.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>path.dirname(&apos;/foo/bar/baz/asdf/quux&apos;)
+// returns
+&apos;/foo/bar/baz/asdf&apos;</code></pre>
+<h2>path.basename(p, [ext])<span><a class="mark" href="#path_path_basename_p_ext" id="path_path_basename_p_ext">#</a></span></h2>
+<p>Return the last portion of a path.  Similar to the Unix <code>basename</code> command.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>path.basename(&apos;/foo/bar/baz/asdf/quux.html&apos;)
+// returns
+&apos;quux.html&apos;
+
+path.basename(&apos;/foo/bar/baz/asdf/quux.html&apos;, &apos;.html&apos;)
+// returns
+&apos;quux&apos;</code></pre>
+<h2>path.extname(p)<span><a class="mark" href="#path_path_extname_p" id="path_path_extname_p">#</a></span></h2>
+<p>Return the extension of the path, from the last &apos;.&apos; to end of string
+in the last portion of the path.  If there is no &apos;.&apos; in the last portion
+of the path or the first character of it is &apos;.&apos;, then it returns
+an empty string.  Examples:
+
+</p>
+<pre><code>path.extname(&apos;index.html&apos;)
+// returns
+&apos;.html&apos;
+
+path.extname(&apos;index.&apos;)
+// returns
+&apos;.&apos;
+
+path.extname(&apos;index&apos;)
+// returns
+&apos;&apos;</code></pre>
+<h2>path.sep<span><a class="mark" href="#path_path_sep" id="path_path_sep">#</a></span></h2>
+<p>The platform-specific file separator. <code>&apos;\\&apos;</code> or <code>&apos;/&apos;</code>.
+
+</p>
+<p>An example on linux:
+
+</p>
+<pre><code>&apos;foo/bar/baz&apos;.split(path.sep)
+// returns
+[&apos;foo&apos;, &apos;bar&apos;, &apos;baz&apos;]</code></pre>
+<p>An example on windows:
+
+</p>
+<pre><code>&apos;foo\\bar\\baz&apos;.split(path.sep)
+// returns
+[&apos;foo&apos;, &apos;bar&apos;, &apos;baz&apos;]</code></pre>
+
+          </div>
+        </div>
+    </div>
+    <div id="footer">
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/#download">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.7.9-pre/LICENSE">license</a>.</p>
+    </div>
+
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    var gaJsHost = (("https:" == document.location.protocol) ?
+    "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script>
+    try {
+      var pageTracker = _gat._getTracker("UA-10874194-2");
+      pageTracker._trackPageview();
+      } catch(err) {}</script>
+</body>
+</html>
+

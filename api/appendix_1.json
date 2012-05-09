@@ -1,0 +1,12 @@
+{
+  "source": "doc/api/appendix_1.markdown",
+  "modules": [
+    {
+      "textRaw": "Appendix 1 - Third Party Modules",
+      "name": "appendix_1_-_third_party_modules",
+      "desc": "<p>There are many third party modules for Node. At the time of writing, August\n2010, the master repository of modules is\n<a href=\"https://github.com/joyent/node/wiki/modules\">the wiki page</a>.\n\n</p>\n<p>This appendix is intended as a SMALL guide to new-comers to help them\nquickly find what are considered to be quality modules. It is not intended\nto be a complete list.  There may be better more complete modules found\nelsewhere.\n\n</p>\n<ul>\n<li><p>Module Installer: <a href=\"https://github.com/isaacs/npm\">npm</a></p>\n</li>\n<li><p>HTTP Middleware: <a href=\"https://github.com/senchalabs/connect\">Connect</a></p>\n</li>\n<li><p>Web Framework: <a href=\"https://github.com/visionmedia/express\">Express</a></p>\n</li>\n<li><p>Web Sockets: <a href=\"https://github.com/learnboost/socket.io\">Socket.IO</a></p>\n</li>\n<li><p>HTML Parsing: <a href=\"https://github.com/aredridel/html5\">HTML5</a></p>\n</li>\n<li><p><a href=\"https://github.com/agnat/node_mdns\">mDNS/Zeroconf/Bonjour</a></p>\n</li>\n<li><p><a href=\"https://github.com/postwait/node-amqp\">RabbitMQ, AMQP</a></p>\n</li>\n<li><p><a href=\"https://github.com/felixge/node-mysql\">mysql</a></p>\n</li>\n<li><p>Serialization: <a href=\"https://github.com/pgriess/node-msgpack\">msgpack</a></p>\n</li>\n<li><p>Scraping: <a href=\"https://github.com/silentrob/Apricot\">Apricot</a></p>\n</li>\n<li><p>Debugger: <a href=\"https://github.com/smtlaissezfaire/ndb\">ndb</a> is a CLI debugger\n<a href=\"https://github.com/dannycoates/node-inspector\">inspector</a> is a web based\ntool.</p>\n</li>\n<li><p><a href=\"https://github.com/mranney/node_pcap\">pcap binding</a></p>\n</li>\n<li><p><a href=\"https://github.com/mscdex/node-ncurses\">ncurses</a></p>\n</li>\n<li><p>Testing/TDD/BDD: <a href=\"http://vowsjs.org/\">vows</a>,\n<a href=\"https://github.com/visionmedia/mocha\">mocha</a>,\n<a href=\"https://github.com/tmpvar/mjsunit.runner\">mjsunit.runner</a></p>\n</li>\n</ul>\n<p>Patches to this list are welcome.\n</p>\n",
+      "type": "module",
+      "displayName": "Appendix 1 - Third Party Modules"
+    }
+  ]
+}

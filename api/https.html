@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>HTTPS Node.js v0.7.9-pre Manual &amp; Documentation</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="http://nodejs.org/api/https.html">
+</head>
+<body class="alt apidoc" id="api-section-https">
+    <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+            <img id="logo" src="http://nodejs.org/images/logo-light.png" alt="node.js">
+        </a>
+    </div>
+    <div id="content" class="clearfix">
+        <div id="column2" class="interior">
+            <ul>
+                <li><a href="/" class="home">Home</a></li>
+                <li><a href="/#download" class="download">Download</a></li>
+                <li><a href="/about/" class="about">About</a></li>
+                <li><a href="http://search.npmjs.org/" class="npm">npm Registry</a></li>
+                <li><a href="http://nodejs.org/api/" class="docs current">Docs</a></li>
+                <li><a href="http://blog.nodejs.org" class="blog">Blog</a></li>
+                <li><a href="/community/" class="community">Community</a></li>
+                <li><a href="/logos/" class="logos">Logos</a></li>
+                <li><a href="http://jobs.nodejs.org/" class="jobs">Jobs</a></li>
+            </ul>
+            <p class="twitter"><a href="http://twitter.com/nodejs">@nodejs</a></p>
+        </div>
+
+        <div id="column1" class="interior">
+          <header>
+            <h1>Node.js v0.7.9-pre Manual &amp; Documentation</h1>
+            <div id="gtoc">
+              <p>
+                <a href="index.html" name="toc">Index</a> |
+                <a href="all.html">View on single page</a> |
+                <a href="https.json">View as JSON</a>
+              </p>
+            </div>
+            <hr>
+          </header>
+
+          <div id="toc">
+            <h2>Table of Contents</h2>
+            <ul>
+<li><a href="#https_https">HTTPS</a><ul>
+<li><a href="#https_class_https_server">Class: https.Server</a></li>
+<li><a href="#https_https_createserver_options_requestlistener">https.createServer(options, [requestListener])</a></li>
+<li><a href="#https_https_request_options_callback">https.request(options, callback)</a></li>
+<li><a href="#https_https_get_options_callback">https.get(options, callback)</a></li>
+<li><a href="#https_class_https_agent">Class: https.Agent</a></li>
+<li><a href="#https_https_globalagent">https.globalAgent</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+
+          <div id="apicontent">
+            <h1>HTTPS<span><a class="mark" href="#https_https" id="https_https">#</a></span></h1>
+<pre><code>Stability: 3 - Stable</code></pre>
+<p>HTTPS is the HTTP protocol over TLS/SSL. In Node this is implemented as a
+separate module.
+
+</p>
+<h2>Class: https.Server<span><a class="mark" href="#https_class_https_server" id="https_class_https_server">#</a></span></h2>
+<p>This class is a subclass of <code>tls.Server</code> and emits events same as
+<code>http.Server</code>. See <code>http.Server</code> for more information.
+
+</p>
+<h2>https.createServer(options, [requestListener])<span><a class="mark" href="#https_https_createserver_options_requestlistener" id="https_https_createserver_options_requestlistener">#</a></span></h2>
+<p>Returns a new HTTPS web server object. The <code>options</code> is similar to
+<a href="tls.html#tls.createServer">tls.createServer()</a>.  The <code>requestListener</code> is
+a function which is automatically added to the <code>&apos;request&apos;</code> event.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>// curl -k https://localhost:8000/
+var https = require(&apos;https&apos;);
+var fs = require(&apos;fs&apos;);
+
+var options = {
+  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),
+  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;)
+};
+
+https.createServer(options, function (req, res) {
+  res.writeHead(200);
+  res.end(&quot;hello world\n&quot;);
+}).listen(8000);</code></pre>
+<h2>https.request(options, callback)<span><a class="mark" href="#https_https_request_options_callback" id="https_https_request_options_callback">#</a></span></h2>
+<p>Makes a request to a secure web server.
+All options from <a href="http.html#http.request">http.request()</a> are valid.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>var https = require(&apos;https&apos;);
+
+var options = {
+  host: &apos;encrypted.google.com&apos;,
+  port: 443,
+  path: &apos;/&apos;,
+  method: &apos;GET&apos;
+};
+
+var req = https.request(options, function(res) {
+  console.log(&quot;statusCode: &quot;, res.statusCode);
+  console.log(&quot;headers: &quot;, res.headers);
+
+  res.on(&apos;data&apos;, function(d) {
+    process.stdout.write(d);
+  });
+});
+req.end();
+
+req.on(&apos;error&apos;, function(e) {
+  console.error(e);
+});</code></pre>
+<p>The options argument has the following options
+
+</p>
+<ul>
+<li>host: IP or domain of host to make request to. Defaults to <code>&apos;localhost&apos;</code>.</li>
+<li>port: port of host to request to. Defaults to 443.</li>
+<li>path: Path to request. Default <code>&apos;/&apos;</code>.</li>
+<li><p>method: HTTP request method. Default <code>&apos;GET&apos;</code>.</p>
+</li>
+<li><p><code>host</code>: A domain name or IP address of the server to issue the request to.
+Defaults to <code>&apos;localhost&apos;</code>.</p>
+</li>
+<li><code>hostname</code>: To support <code>url.parse()</code> <code>hostname</code> is preferred over <code>host</code></li>
+<li><code>port</code>: Port of remote server. Defaults to 443.</li>
+<li><code>method</code>: A string specifying the HTTP request method. Defaults to <code>&apos;GET&apos;</code>.</li>
+<li><code>path</code>: Request path. Defaults to <code>&apos;/&apos;</code>. Should include query string if any.
+E.G. <code>&apos;/index.html?page=12&apos;</code></li>
+<li><code>headers</code>: An object containing request headers.</li>
+<li><code>auth</code>: Basic authentication i.e. <code>&apos;user:password&apos;</code> to compute an
+Authorization header.</li>
+<li><code>agent</code>: Controls <a href="#https.Agent">Agent</a> behavior. When an Agent is
+used request will default to <code>Connection: keep-alive</code>. Possible values:<ul>
+<li><code>undefined</code> (default): use <a href="#https.globalAgent">globalAgent</a> for this
+host and port.</li>
+<li><code>Agent</code> object: explicitly use the passed in <code>Agent</code>.</li>
+<li><code>false</code>: opts out of connection pooling with an Agent, defaults request to
+<code>Connection: close</code>.</li>
+</ul>
+</li>
+</ul>
+<p>The following options from <a href="tls.html#tls.connect">tls.connect()</a> can also be
+specified. However, a <a href="#https.globalAgent">globalAgent</a> silently ignores these.
+
+</p>
+<ul>
+<li><code>key</code>: Private key to use for SSL. Default <code>null</code>.</li>
+<li><code>passphrase</code>: A string of passphrase for the private key. Default <code>null</code>.</li>
+<li><code>cert</code>: Public x509 certificate to use. Default <code>null</code>.</li>
+<li><code>ca</code>: An authority certificate or array of authority certificates to check
+the remote host against.</li>
+<li><code>ciphers</code>: A string describing the ciphers to use or exclude. Consult
+<a href="http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT">http://www.openssl.org/docs/apps/ciphers.html#CIPHER_LIST_FORMAT</a> for
+details on the format.</li>
+<li><code>rejectUnauthorized</code>: If <code>true</code>, the server certificate is verified against
+the list of supplied CAs. An <code>&apos;error&apos;</code> event is emitted if verification
+fails. Verification happens at the connection level, <em>before</em> the HTTP
+request is sent. Default <code>false</code>.</li>
+</ul>
+<p>In order to specify these options, use a custom <code>Agent</code>.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>var options = {
+  host: &apos;encrypted.google.com&apos;,
+  port: 443,
+  path: &apos;/&apos;,
+  method: &apos;GET&apos;,
+  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),
+  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;)
+};
+options.agent = new https.Agent(options);
+
+var req = https.request(options, function(res) {
+  ...
+}</code></pre>
+<p>Or does not use an <code>Agent</code>.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>var options = {
+  host: &apos;encrypted.google.com&apos;,
+  port: 443,
+  path: &apos;/&apos;,
+  method: &apos;GET&apos;,
+  key: fs.readFileSync(&apos;test/fixtures/keys/agent2-key.pem&apos;),
+  cert: fs.readFileSync(&apos;test/fixtures/keys/agent2-cert.pem&apos;),
+  agent: false
+};
+
+var req = https.request(options, function(res) {
+  ...
+}</code></pre>
+<h2>https.get(options, callback)<span><a class="mark" href="#https_https_get_options_callback" id="https_https_get_options_callback">#</a></span></h2>
+<p>Like <code>http.get()</code> but for HTTPS.
+
+</p>
+<p>Example:
+
+</p>
+<pre><code>var https = require(&apos;https&apos;);
+
+https.get({ host: &apos;encrypted.google.com&apos;, path: &apos;/&apos; }, function(res) {
+  console.log(&quot;statusCode: &quot;, res.statusCode);
+  console.log(&quot;headers: &quot;, res.headers);
+
+  res.on(&apos;data&apos;, function(d) {
+    process.stdout.write(d);
+  });
+
+}).on(&apos;error&apos;, function(e) {
+  console.error(e);
+});</code></pre>
+<h2>Class: https.Agent<span><a class="mark" href="#https_class_https_agent" id="https_class_https_agent">#</a></span></h2>
+<p>An Agent object for HTTPS similar to <a href="http.html#http.Agent">http.Agent</a>.
+See <a href="#https.request">https.request()</a> for more information.
+
+
+</p>
+<h2>https.globalAgent<span><a class="mark" href="#https_https_globalagent" id="https_https_globalagent">#</a></span></h2>
+<p>Global instance of <a href="#https.Agent">https.Agent</a> which is used as the default
+for all HTTPS client requests.
+</p>
+
+          </div>
+        </div>
+    </div>
+    <div id="footer">
+        <ul class="clearfix">
+            <li><a href="/">Node.js</a></li>
+            <li><a href="/#download">Download</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="http://search.npmjs.org/">npm Registry</a></li>
+            <li><a href="http://nodejs.org/api/">Docs</a></li>
+            <li><a href="http://blog.nodejs.org">Blog</a></li>
+            <li><a href="/community/">Community</a></li>
+            <li><a href="/logos/">Logos</a></li>
+            <li><a href="http://jobs.nodejs.org/">Jobs</a></li>
+            <li><a href="http://twitter.com/nodejs" class="twitter">@nodejs</a></li>
+        </ul>
+
+        <p>Copyright <a href="http://joyent.com">Joyent, Inc</a>, Node.js is a <a href="/trademark-policy.pdf">trademark</a> of Joyent, Inc. View <a href="https://raw.github.com/joyent/node/v0.7.9-pre/LICENSE">license</a>.</p>
+    </div>
+
+  <script src="../sh_main.js"></script>
+  <script src="../sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+  <script>
+    var gaJsHost = (("https:" == document.location.protocol) ?
+    "https://ssl." : "http://www.");
+    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+  <script>
+    try {
+      var pageTracker = _gat._getTracker("UA-10874194-2");
+      pageTracker._trackPageview();
+      } catch(err) {}</script>
+</body>
+</html>
+
