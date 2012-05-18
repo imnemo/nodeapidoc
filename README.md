@@ -25,6 +25,13 @@ V0.7.9-pre
 > 1、用connect写一个`nodejs`版服务器，练手嘛。。。虽然很简单！  
 > 2、既然练手，那也得有点专业精神，包装成一个可全局安装的`node module`，这样可以直接通过命令行启动文档喽~**Cool!**  
 否则如果用`nodejs`做服务端的话，还得先去命令行启动，然后到浏览器请求本地文档页面！  
+
+##CHM file##
+好吧，有做好的chm文件，最方便了~  
+可以单独下载两个文件  
+[nodeapidoc.full.chm](https://github.com/sunshine1988/nodeapidoc/blob/master/nodeapidoc.full.chm):Node官网全页面  
+[nodeapidoc.min.chm](https://github.com/sunshine1988/nodeapidoc/blob/master/nodeapidoc.min.chm)：只包含NodeJS Api Doc  
+后者只有几百KB，下这个好了~
   
 ##Relative##
 [这哥们儿已经hack了一个比官方文档更漂亮且实用的文档了](http://millermedeiros.github.com/mdoc/examples/node_api/doc/)  
