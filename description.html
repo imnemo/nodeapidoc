@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+  <meta charset="utf-8">
+    <style>
+    ul {
+      padding: 0;
+      margin: 0;
+    }
+    </style>
+    <link type="image/x-icon" rel="icon" href="favicon.ico">
+    <link type="image/x-icon" rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="pipe.css">
+    <link rel="stylesheet" href="sh_vim-dark.css">
+    <link rel="alternate"
+          type="application/rss+xml"
+          title="node blog"
+          href="http://feeds.feedburner.com/nodejs/123123123">
+    <title>node.js</title>
+  </head>
+  <body id="front">
+	<style>
+		#intro a{
+			color: #fff;
+		}
+	</style>
+    <div id="intro">
+        <h1>This is NodeJS api chm file maked by <a href="http://www.inodejs.net">sunshine1988</a>   which is is compiled from Node's official document using HugeCHM</h1><img class="forkme" src="https://a248.e.akamai.net/camo.github.com/abad93f42020b733148435e2cd92ce15c542d320/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677265656e5f3030373230302e706e67" alt="Fork me on GitHub"></a>
+    </div>
+
+    <script>;(function() {
+      // attach as soon as the required elements are in the DOM.
+      // don't need to wait for entire document to be ready, since we're
+      // not adding any *new* nodes to the <body>, so there's no threat
+      // of 'Invalid operation' errors in old MSIE 6.
+      document.getElementById('downloadbutton').onclick = function(e) {
+        e = e || window.event;
+        e.stopPropagation && e.stopPropagation();
+        e.cancelBubble = true;
+        // need to give the hash a tick to update
+        setTimeout(downloadDialogUpdate, 0);
+      };
+
+      document.getElementById('download-close').onclick =
+      document.documentElement.onclick = function(e) {
+        e = e || window.event;
+        if (location.hash === '#download') location.hash = '';
+        downloadDialogUpdate();
+      };
+
+      document.getElementById('download').onclick = function(e) {
+        e = e || window.event;
+        e.stopPropagation && e.stopPropagation();
+        e.cancelBubble = true;
+      };
+
+      // I keep expecting <Esc> to close the dialog...
+      document.documentElement.onkeydown = function(e) {
+        e = e || window.event;
+        var k = e.which || e.keyCode || e.keyIdentifier;
+        if (typeof k === 'string') k = k.charCodeAt(0);
+        if (k === 27) document.documentElement.onclick(e);
+      };
+
+      // hacky workaround for old ie browsers that don't support :target css.
+      function downloadDialogUpdate () {
+        var div = document.getElementById('download');
+        if (!div) return;
+        var expect = location.hash === '#download' ? 'block' : 'none';
+        var actual = div.currentStyle ? div.currentStyle.display
+                   : window.getComputedStyle
+                     ? document.defaultView.getComputedStyle(div, null).getPropertyValue('display')
+                   : null;
+
+        // it looks like a string, but it might not actually be a string.
+        // explicitly cast for MSIE 6 and 7.
+        actual = '' + actual;
+        expect = '' + expect;
+        if (actual !== expect) {
+          div.style.display = expect;
+        }
+      }
+      downloadDialogUpdate();
+    })();</script>
+
+    <div id="footer">
+        <ul class="clearfix" style="background:none">
+        </ul>
+
+        
+    </div>
+
+
+    <script src="sh_main.js"></script>
+    <script src="sh_javascript.min.js"></script>
+    <script>highlight(undefined, undefined, 'pre');</script>
+
+    <script>
+      var gaJsHost = (("https:" == document.location.protocol) ?
+      "https://ssl." : "http://www.");
+      document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+    </script>
+    <script>
+      try {
+        var pageTracker = _gat._getTracker("UA-10874194-2");
+        pageTracker._trackPageview();
+      } catch(err) {}
+    </script>
+  </body>
+</html>
